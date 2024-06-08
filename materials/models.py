@@ -33,7 +33,7 @@ class Lesson(models.Model):
         verbose_name='Название урока',
         max_length=75
     )
-    course_description = models.TextField(
+    lesson_description = models.TextField(
         verbose_name='Описание урока',
         **NULLABLE
     )
