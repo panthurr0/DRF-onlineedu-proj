@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core.management import BaseCommand
 
 from materials.models import Course, Lesson
@@ -25,8 +27,8 @@ class Command(BaseCommand):
         ]
 
         payments_list = [
-            {'user': 1, 'course': 1, 'pay_sum': 1000, 'pay_method': 'Перевод на счёт'},
-            {'user': 2, 'lesson': 1, 'pay_sum': 500, 'pay_method': 'Наличными'},
+            {'user': 1, 'course': 1, 'pay_sum': 1000, 'pay_method': Payment.CASH, 'pay_date': date(2020, 5, 5)},
+            {'user': 2, 'lesson': 1, 'pay_sum': 500, 'pay_method': Payment.TRANSFER, 'pay_date': date(2023, 1, 1)},
         ]
 
         course_for_create = []
