@@ -54,7 +54,8 @@ class Lesson(models.Model):
         Course,
         verbose_name='Курс',
         on_delete=models.SET_NULL,
-        **NULLABLE
+        **NULLABLE,
+        related_name='lesson'
     )
 
     def __str__(self):
