@@ -10,6 +10,6 @@ app_name = UsersConfig.name
 urlpatterns = [
     path('payment/', PaymentListAPIView.as_view(), name='payment-list'),
     path('register/', UserCreateAPIView.as_view(), name='register'),
-    path('login/', TokenObtainPairView.as_view(permissions=(AllowAny,)), name='login'),
+    path('login/', TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
