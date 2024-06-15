@@ -2,8 +2,8 @@ from datetime import date
 
 from django.core.management import BaseCommand
 
-from materials.models import Course, Lesson
-from users.models import User, Payment
+from materials.models import Course, Lesson, Payment
+from users.models import User
 
 
 class Command(BaseCommand):
