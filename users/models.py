@@ -9,23 +9,16 @@ NULLABLE = {'blank': True, 'null': True}
 class User(AbstractUser):
     username = None
     email = models.EmailField(
-        verbose_name='почта',
-        unique=True
+        verbose_name='почта', unique=True
     )
     phone_number = models.CharField(
-        verbose_name='номер телефона',
-        max_length=30,
-        **NULLABLE
+        verbose_name='номер телефона', max_length=30, **NULLABLE
     )
     avatar = models.ImageField(
-        verbose_name='аватар',
-        upload_to='users/',
-        **NULLABLE
+        verbose_name='аватар', upload_to='users/', **NULLABLE
     )
     city = models.CharField(
-        verbose_name='город',
-        max_length=100,
-        **NULLABLE
+        verbose_name='город', max_length=100, **NULLABLE
     )
 
     USERNAME_FIELD = "email"
@@ -49,23 +42,16 @@ class Payment(models.Model):
     ]
 
     user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        **NULLABLE
+        User, on_delete=models.CASCADE, **NULLABLE
     )
     pay_date = models.DateField(
-        verbose_name='Дата оплаты',
-        **NULLABLE
+        verbose_name='Дата оплаты', **NULLABLE
     )
     course = models.ForeignKey(
-        Course,
-        on_delete=models.CASCADE,
-        **NULLABLE
+        Course, on_delete=models.CASCADE, **NULLABLE
     )
     lesson = models.ForeignKey(
-        Lesson,
-        on_delete=models.CASCADE,
-        **NULLABLE
+        Lesson, on_delete=models.CASCADE, **NULLABLE
     )
     pay_sum = models.PositiveIntegerField(
         verbose_name='Сумма оплаты'
