@@ -1,7 +1,5 @@
 from django.db import models
 
-from users.models import User
-
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -21,7 +19,7 @@ class Course(models.Model):
     )
 
     owner = models.ForeignKey(
-        User,
+        "users.User",
         on_delete=models.SET_NULL,
         **NULLABLE,
         verbose_name='владелец'
@@ -68,7 +66,7 @@ class Lesson(models.Model):
     )
 
     owner = models.ForeignKey(
-        User,
+        "users.User",
         on_delete=models.SET_NULL,
         **NULLABLE,
         verbose_name='Владелец'
@@ -80,47 +78,3 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'Урок'
         verbose_name_plural = 'Уроки'
-
-
-class Payment(models.Model):
-    TRANSFER = 'Перевод'
-    CASH = 'Наличные'
-
-    PAYMENT_METHODS = [
-        (TRANSFER, 'Перевод на счёт'),
-        (CASH, 'Наличными'),
-    ]
-
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, **NULLABLE
-    )
-
-    pay_date = models.DateField(
-        verbose_name='Дата оплаты', **NULLABLE
-    )
-
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, **NULLABLE
-    )
-
-    lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, **NULLABLE
-    )
-
-    pay_sum = models.PositiveIntegerField(
-        verbose_name='Сумма оплаты'
-    )
-
-    pay_method = models.CharField(
-        verbose_name='Способ оплаты',
-        choices=PAYMENT_METHODS,
-        default=TRANSFER
-    )
-
-    def __str__(self):
-        return (f'{self.user}: {self.pay_method}.'
-                f'{self.course if self.course else self.lesson}')
-
-    class Meta:
-        verbose_name = 'Оплата'
-        verbose_name_plural = 'Оплаты'

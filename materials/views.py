@@ -1,12 +1,10 @@
-from django_filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import (CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView,
                                      DestroyAPIView)
 from rest_framework.viewsets import ModelViewSet
-
-from materials.models import Course, Lesson, Payment
-from materials.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
-from users.permissions import IsModer
+from rest_framework.permissions import IsAuthenticated
+from materials.models import Course, Lesson
+from materials.serializers import CourseSerializer, LessonSerializer
+from users.permissions import IsModer, IsOwner
 
 
 class CourseViewSet(ModelViewSet):
@@ -14,44 +12,43 @@ class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
 
     def get_permissions(self):
-        if self.action in ["create", "destroy"]:
+        if self.action == "create":
             self.permission_classes = (~IsModer,)
         elif self.action in ["update", "retrieve"]:
-            self.permission_classes = (IsModer, IsOwner)
+            self.permission_classes = (IsModer | IsOwner,)
+        elif self.action == "destroy":
+            self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class LessonCreateApiView(CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsModer]
+    permission_classes = [~IsModer, IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class LessonListApiView(ListAPIView):
-    serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModer]
+    serializer_class = LessonSerializer
 
 
 class LessonRetrieveApiView(RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModer]
+    permission_classes = [IsModer | IsOwner, IsAuthenticated]
 
 
 class LessonUpdateApiView(UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
-    permission_classes = [IsModer]
+    permission_classes = [IsModer | IsOwner, IsAuthenticated]
 
 
 class LessonDestroyApiView(DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = [IsModer]
-
-
-class PaymentListAPIView(ListAPIView):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ('course', 'lesson', 'pay_method')
-    ordering_fields = ('pay_date',)
+    permission_classes = [~IsModer | IsOwner, IsAuthenticated]
