@@ -76,7 +76,7 @@ class Payment(models.Model):
         verbose_name_plural = 'Оплаты'
 
 
-class Subscribe(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name='Пользователь',
