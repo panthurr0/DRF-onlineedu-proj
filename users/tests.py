@@ -5,14 +5,6 @@ from rest_framework.test import APITestCase
 from materials.models import Course
 from users.models import User
 
-response_add_message = {
-    "message": "Подписка добавлена"
-}
-
-response_delete_message = {
-    "message": "Подписка удалена"
-}
-
 
 class SubscriptionTestCase(APITestCase):
     def setUp(self):
@@ -20,30 +12,18 @@ class SubscriptionTestCase(APITestCase):
         self.course = Course.objects.create(course_title='Курс о том', owner=self.user)
 
         self.client.force_authenticate(user=self.user)
+        self.response_add_message = {'message': 'Subscription added'}
+        self.response_delete_message = {'message': 'Subscription removed'}
 
-    def test_subscription(self):
+    def _test_subscription_helper(self, expected_response):
         url = reverse('users:sub-create')
-
         data = {
             'course': self.course.pk
         }
-
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), expected_response)
 
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            response.json(), response_add_message
-        )
-
-        response = self.client.post(url, data)
-
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-
-        self.assertEqual(
-            response.json(), response_delete_message
-        )
+    def test_subscription(self):
+        self._test_subscription_helper(self.response_add_message)
+        self._test_subscription_helper(self.response_delete_message)
