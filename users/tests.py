@@ -5,6 +5,14 @@ from rest_framework.test import APITestCase
 from materials.models import Course
 from users.models import User
 
+response_add_message = {
+    "message": "Подписка добавлена"
+}
+
+response_delete_message = {
+    "message": "Подписка удалена"
+}
+
 
 class SubscriptionTestCase(APITestCase):
     def setUp(self):
@@ -18,14 +26,6 @@ class SubscriptionTestCase(APITestCase):
 
         data = {
             'course': self.course.pk
-        }
-
-        response_add_message = {
-            "message": "Подписка добавлена"
-        }
-
-        response_delete_message = {
-            "message": "Подписка удалена"
         }
 
         response = self.client.post(url, data)
