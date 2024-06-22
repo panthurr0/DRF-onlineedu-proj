@@ -5,10 +5,11 @@ from users.models import Subscription
 
 
 class LessonSerializer(ModelSerializer):
+    video_url = [VideoURLValidator(field='video_url')]
+
     class Meta:
         model = Lesson
         fields = '__all__'
-        validators = [VideoURLValidator(field='video_url')]
 
 
 class CourseSerializer(ModelSerializer):
