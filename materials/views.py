@@ -3,7 +3,7 @@ from rest_framework.generics import (CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from materials.models import Course, Lesson
-from materials.paginators import MaterialsPagination
+from materials.pagination import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModer, IsOwner
 
@@ -14,12 +14,10 @@ class CourseViewSet(ModelViewSet):
     pagination_class = MaterialsPagination
 
     def get_permissions(self):
-        if self.action == "create":
-            self.permission_classes = (~IsModer,)
-        elif self.action in ["update", "retrieve"]:
-            self.permission_classes = (IsModer | IsOwner,)
-        elif self.action == "destroy":
-            self.permission_classes = (~IsModer | IsOwner,)
+        if self.action in ["create", "list"]:
+            self.permission_classes = [IsAuthenticated | IsModer]
+        elif self.action in ["update", "retrieve", "destroy"]:
+            self.permission_classes = [IsAuthenticated | IsOwner]
         return super().get_permissions()
 
     def perform_create(self, serializer):
@@ -28,7 +26,6 @@ class CourseViewSet(ModelViewSet):
 
 class LessonCreateApiView(CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [~IsModer, IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -54,4 +51,4 @@ class LessonUpdateApiView(UpdateAPIView):
 
 class LessonDestroyApiView(DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = [~IsModer | IsOwner, IsAuthenticated]
+    permission_classes = [IsOwner, IsAuthenticated]
