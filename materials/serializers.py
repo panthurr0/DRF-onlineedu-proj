@@ -1,3 +1,4 @@
+from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from materials.models import Course, Lesson
 from materials.validators import VideoURLValidator
@@ -5,7 +6,7 @@ from users.models import Subscription
 
 
 class LessonSerializer(ModelSerializer):
-    video_url = [VideoURLValidator(field='video_url')]
+    video_url = CharField[VideoURLValidator(field='video_url')]
 
     class Meta:
         model = Lesson

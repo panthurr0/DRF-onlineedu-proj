@@ -12,8 +12,8 @@ class SubscriptionTestCase(APITestCase):
         self.course = Course.objects.create(course_title='Курс о том', owner=self.user)
 
         self.client.force_authenticate(user=self.user)
-        self.response_add_message = {'message': 'Subscription added'}
-        self.response_delete_message = {'message': 'Subscription removed'}
+        self.response_add_message = {'message': 'Подписка добавлена'}
+        self.response_delete_message = {'message': 'Подписка удалена'}
 
     def _test_subscription_helper(self, expected_response):
         url = reverse('users:sub-create')
