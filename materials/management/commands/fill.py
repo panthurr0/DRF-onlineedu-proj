@@ -2,8 +2,8 @@ from datetime import date
 
 from django.core.management import BaseCommand
 
-from materials.models import Course, Lesson, Payment
-from users.models import User
+from materials.models import Course, Lesson
+from users.models import User, Payment
 
 
 class Command(BaseCommand):
@@ -21,7 +21,6 @@ class Command(BaseCommand):
         ]
 
         users_list = [
-            {'email': 'bla@mail.ru'},
             {'email': 'test@mail.ru'},
             {'email': 'some@mail.ru'},
         ]

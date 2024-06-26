@@ -1,3 +1,5 @@
+import datetime
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (CreateAPIView, RetrieveAPIView, DestroyAPIView,
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 from materials.models import Course
 from users.models import User, Payment, Subscription
 from users.serializers import UserSerializer, PaymentSerializer, SubscriptionSerializer
+from users.services import create_stripe_price, create_stripe_session
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -53,6 +56,20 @@ class PaymentListAPIView(ListAPIView):
     filterset_fields = ('course', 'lesson', 'pay_method')
     ordering_fields = ('pay_date',)
     permission_classes = IsAdminUser
+
+
+class PaymentCreateAPIView(CreateAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+
+    def perform_create(self, serializer):
+        payment = serializer.save(user=self.request.user)
+        price = create_stripe_price(payment.pay_sum)
+        session_id, payment_url = create_stripe_session(price)
+        payment.session_id = session_id
+        payment.url = payment_url
+        payment.pay_date = datetime.date.today()
+        payment.save()
 
 
 class SubscriptionCreateAPIView(CreateAPIView):

@@ -67,6 +67,16 @@ class Payment(models.Model):
         default=TRANSFER
     )
 
+    url = models.CharField(
+        verbose_name='Ссылка на оплату',
+        **NULLABLE
+    )
+
+    session_id = models.CharField(
+        verbose_name='ID сессии',
+        **NULLABLE
+    )
+
     def __str__(self):
         return (f'{self.user}: {self.pay_method}.'
                 f'{self.course if self.course else self.lesson}')
