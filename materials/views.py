@@ -1,10 +1,11 @@
 from rest_framework.generics import (CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView,
-                                     DestroyAPIView)
+                                     DestroyAPIView, get_object_or_404)
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from materials.models import Course, Lesson
 from materials.pagination import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer
+from materials.tasks import send_notification
 from users.permissions import IsModer, IsOwner
 
 
@@ -22,6 +23,12 @@ class CourseViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def update(self, request, pk):
+        course = get_object_or_404(Course, pk=pk)
+        send_notification.delay(course_id=course.id)
+        print(f'Курс {course.course_title} обновлён')
+        return super().update(request)
 
 
 class LessonCreateApiView(CreateAPIView):
