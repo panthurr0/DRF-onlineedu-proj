@@ -167,3 +167,10 @@ STRIPE_API_KEY = os.getenv('stripe_api_key')
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BEAT_SCHEDULE = {
+    'off-user-is_active': {
+        'task': 'users.tasks.off_user_is_active',
+        'schedule': timedelta(days=1),
+    },
+}
