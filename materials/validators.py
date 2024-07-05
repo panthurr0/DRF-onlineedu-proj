@@ -1,4 +1,5 @@
 import re
+
 from rest_framework.serializers import ValidationError
 
 
@@ -8,6 +9,6 @@ class VideoURLValidator:
         self.field = field
 
     def __call__(self, value):
-        reg = re.compile(r'(https?://)?(www\.)?youtube\.com')
+        reg = re.compile(r"(https?://)?(www\.)?youtube\.com")
         if not re.match(reg, value):
-            raise ValidationError('Поддерживаются только youtube-видео!')
+            raise ValidationError("Поддерживаются только youtube-видео!")

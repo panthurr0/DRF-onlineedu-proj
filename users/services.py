@@ -16,7 +16,7 @@ def create_stripe_price(amount: int) -> object:
 
 
 def create_stripe_session(price: object):
-    """ Создание сессии на оплату в stripe """
+    """Создание сессии на оплату в stripe"""
     session = stripe.checkout.Session.create(
         success_url="http://127.0.0.1:8000/",
         line_items=[{"price": price.get("id"), "quantity": 1}],

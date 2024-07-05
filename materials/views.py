@@ -1,7 +1,9 @@
-from rest_framework.generics import (CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView,
-                                     DestroyAPIView, get_object_or_404)
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView, get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
+
 from materials.models import Course, Lesson
 from materials.pagination import MaterialsPagination
 from materials.serializers import CourseSerializer, LessonSerializer
@@ -27,7 +29,7 @@ class CourseViewSet(ModelViewSet):
     def update(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
         send_notification.delay(course_id=course.id)
-        print(f'Курс {course.course_title} обновлён')
+        print(f"Курс {course.course_title} обновлён")
         return super().update(request)
 
 
